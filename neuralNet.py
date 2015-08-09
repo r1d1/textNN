@@ -2,6 +2,7 @@
 
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 
 class NeuralNet:
 	def __init__(self, inSize=5, outSize=5, hidSize=3):
@@ -30,11 +31,20 @@ class NeuralNet:
 
 
 	def learn(self):
-		error = np.subtract(self.outputLayer, self.inputLayer)
-		#print type(self.outputLayer) #error
-		# backpropagate :
-			
-		print error.shape, sum(error)
+		# Back Propagate :
+		# for all layers (inputLayer is desired output)
+		error = self.outputLayer * (1.0 - self.outputLayer) * np.power(np.subtract(self.inputLayer, self.outputLayer), 2)
+		# error = np.power(np.subtract(self.outputLayer, self.inputLayer), 2)
+		print self.weights[1]
+
+	#	print error
+		print error.shape, self.sigmoidDeriv(1.0, 500.7), sum(error)
+	#	x=np.arange(-100,100)
+	#	data1=[self.sigmoid(1.0, val) for val in x]
+	#	data2=[self.sigmoidDeriv(1.0, val) for val in x]
+	#	plt.plot(data1)
+	#	plt.plot(data2)
+	#	plt.show()
 
 	def computeOutput(self):
 		for neuron in range(self.hidSize):
@@ -55,3 +65,7 @@ class NeuralNet:
 	
 	def sigmoid(self, lamb, val):
 		return 1.0 / (1.0 + math.exp( - lamb * val))
+	
+	def sigmoidDeriv(self, lamb, val):
+		# Is also equal to s(x)*(1-s(x))
+		return math.exp(-lamb * val) / math.pow((1.0 + math.exp( - lamb * val)),2)
