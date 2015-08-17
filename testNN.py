@@ -1,8 +1,11 @@
 #!/usr/bin/python
 
 import numpy as np
+import matplotlib.pyplot as plt
 from neuralNet import NeuralNet
 from textProcessing import TextProcessing
+
+plt.ion()
 
 proc = TextProcessing()
 nn = NeuralNet(proc.maxChar-proc.minChar, proc.maxChar-proc.minChar, (proc.maxChar-proc.minChar)/2 )
@@ -18,19 +21,38 @@ nn = NeuralNet(proc.maxChar-proc.minChar, proc.maxChar-proc.minChar, (proc.maxCh
 #nn.inputPositionalData([5, 14, 38, 14])
 #print randLetter 
 
-for i in range(10):
-	inputtext = raw_input('Say something: ')
+alphabet = 'abcdefghijklmnopqrstuvwxyz'
+iterNb = 0
+#for i in range(100):
+while abs(nn.endError) > 0.0001:
+	#inputtext = raw_input('Say something: ')
+	inputtext = alphabet[np.random.randint(0,len(alphabet)-1)] 
 	answer=""
 	# Make network learn from input
 	for char in inputtext:
 		nn.inputData(proc.char2vec(char))
-		#print proc.char2val(char), nn.inputLayer
 		nn.computeOutput()
 		nn.learn()
 		#nn.learn()
-		answer += proc.vec2char(nn.outputLayer.tolist())
+		answer += proc.vec2char(nn.outputLayer_f.tolist())
 	# Generate answer (which is way more tricky)
-	print answer 
+	iterNb = iterNb + 1
+	#print answer
+	#nn.displayNetwork()
+
+#plt.show()
+print "Network trained in ", iterNb, "iterations !"
+
+inputtext = raw_input('Say something: ')
+answer=""
+
+# Make network learn from input
+for char in inputtext:
+	nn.inputData(proc.char2vec(char))
+	nn.computeOutput()
+	answer += proc.vec2char(nn.outputLayer_f.tolist())
+# Generate answer (which is way more tricky)
+print answer
 
 #proc.input2Text([66, 38, 43])
 #print proc.rawText
