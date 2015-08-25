@@ -89,3 +89,29 @@ for expl in testDataset:
 # normalising by neuron and by sample nb
 finalError = sum(finalError) / (inputSize * testDatasetSize)
 print "Final error", finalError
+
+count = 0
+for pat in patterns:
+	print count, pat
+	count += 1
+
+while True:
+	ptT = raw_input('Which pattern to test ? (Or Q to quit) : ')
+	print type(ptT)
+	if ptT == 'Q' or ptT == 'q':
+		break
+	else :
+		if ptT < str(len(patterns)):
+			pat = int(ptT)
+			#print patterns[pat]
+			sample = [patterns[pat][elem]+0.25*np.random.rand() for elem in range(inputSize)]
+			print sample
+			nn.inputData(sample)
+			nn.computeOutput()
+			print nn.outputLayer_f
+			plt.clf()	
+			plt.subplot(2,1,1)
+			plt.plot(nn.inputLayer)
+			plt.subplot(2,1,2)
+			plt.plot(nn.outputLayer_f)
+

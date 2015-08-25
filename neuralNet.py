@@ -17,7 +17,7 @@ class NeuralNet:
 		self.inSize = inSize
 		self.outSize = outSize
 		self.hidSize = hidSize
-		self.learningRate = 1.0
+		self.learningRate = 0.1
 		self.endError = sys.float_info.max
 
 	# direct layer value (so a vector of float) at t

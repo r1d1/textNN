@@ -24,7 +24,7 @@ nn = NeuralNet(proc.maxChar-proc.minChar, proc.maxChar-proc.minChar, (proc.maxCh
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
 iterNb = 0
 #for i in range(100):
-while abs(nn.endError) > 0.0001:
+while abs(nn.endError) > 0.00001:
 	#inputtext = raw_input('Say something: ')
 	inputtext = alphabet[np.random.randint(0,len(alphabet)-1)] 
 	answer=""
