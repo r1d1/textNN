@@ -23,8 +23,9 @@ dictOfWords = rawWords.split()
 
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
 iterNb = 0
-#for i in range(100):
-while abs(nn.endError) > 0.01:
+errorEvolution=[]
+for i in range(100):
+#while abs(nn.endError) > 0.01:
 	#inputtext = alphabet[np.random.randint(0,len(alphabet)-1)] 
 	#answer=""
 	# Randomly pick a word from dict :
@@ -43,36 +44,56 @@ while abs(nn.endError) > 0.01:
 #	#	nn.learn()
 #	#	answer += proc.vec2char(nn.outputLayer_f.tolist())
 	nn.inputData(inputvec)
-	#print "inputed"
 	nn.computeOutput()
-	#print "computed"
-	nn.learn()
-	#print "learned"
+	#nn.learn()
+	
 	#answer += proc.vec2char(nn.outputLayer_f.tolist())
 	# Generate answer (which is way more tricky)
 	iterNb = iterNb + 1
+	errorEvolution.append(abs(nn.endError))
 	#print answer
 	#nn.displayNetwork()
 
 #plt.show()
+plt.figure()
+plt.plot(errorEvolution)
+plt.show()
 print "Network trained in ", iterNb, "iterations !"
 
-inputtext = raw_input('Say something: ')
-answer=""
+#inputtext = raw_input('Say something: ')
+#answer=""
+#
+## Make network learn from input
+##ifor char in inputtext:
+##	nn.inputData(proc.char2vec(char))
+##	nn.computeOutput()
+##	answer += proc.vec2char(nn.outputLayer_f.tolist())
+#for letter in inputtext:
+#	inputvec[counter*layerLength + proc.char2val(letter)] = 1.0
+#	counter += 1
+#nn.inputData(inputvec)
+#nn.computeOutput()
+#
+#for letter in range(wordLength):
+#	answer += proc.vec2char(nn.outputLayer_f[letter*wordLength:(letter+1)*wordLength].tolist())
+## Generate answer (which is way more tricky)
+#print answer
 
-# Make network learn from input
-#ifor char in inputtext:
-#	nn.inputData(proc.char2vec(char))
-#	nn.computeOutput()
-#	answer += proc.vec2char(nn.outputLayer_f.tolist())
-for letter in inputtext:
-	inputvec[counter*layerLength + proc.char2val(letter)] = 1.0
-	counter += 1
-nn.inputData(inputvec)
-nn.computeOutput()
-
-# Generate answer (which is way more tricky)
-print answer
+while True:
+	inputtext = raw_input('Say something: ')
+	answer=""
+	if inputtext == 'Q' or inputtext == 'q':
+		break
+	else :
+		for letter in inputtext:
+			inputvec[counter*layerLength + proc.char2val(letter)] = 1.0
+			counter += 1
+		nn.inputData(inputvec)
+		nn.computeOutput()
+	for letter in range(wordLength):
+		answer += proc.vec2char(nn.outputLayer_f[letter*wordLength:(letter+1)*wordLength].tolist())
+	# Generate answer (which is way more tricky)
+	print answer
 
 #proc.input2Text([66, 38, 43])
 #print proc.rawText
