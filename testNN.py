@@ -8,33 +8,47 @@ from textProcessing import TextProcessing
 plt.ion()
 
 proc = TextProcessing()
-nn = NeuralNet(proc.maxChar-proc.minChar, proc.maxChar-proc.minChar, (proc.maxChar-proc.minChar)/2 )
+# Mapping words as image, so need a large input :
+wordLength = 20
+layerLength = proc.maxChar-proc.minChar
+externalSize = layerLength*wordLength
+nn = NeuralNet(externalSize, externalSize, externalSize / 2 )
 
-#proc.text2Input()
-#print proc.rawText
-#print proc.output
-#print proc.inputText
+dictFile = open('corncob_lowercase.txt','r')
+rawWords = dictFile.read()
+dictFile.close()
 
-#randInput = np.zeros(nn.inSize)
-#randLetter = np.random.randint(0, nn.inSize)
-#randInput[randLetter] = 1.0
-#nn.inputPositionalData([5, 14, 38, 14])
-#print randLetter 
+print len(rawWords), type(rawWords), len(rawWords.split())
+dictOfWords = rawWords.split()
 
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
 iterNb = 0
 #for i in range(100):
-while abs(nn.endError) > 0.00001:
-	#inputtext = raw_input('Say something: ')
-	inputtext = alphabet[np.random.randint(0,len(alphabet)-1)] 
-	answer=""
+while abs(nn.endError) > 0.01:
+	#inputtext = alphabet[np.random.randint(0,len(alphabet)-1)] 
+	#answer=""
+	# Randomly pick a word from dict :
+	inputtext = dictOfWords[np.random.randint(0,len(dictOfWords)-1)]
+	print inputtext
+	inputvec = [0.0 for i in range(len(nn.inputLayer))]
+	counter = 0
+	for letter in inputtext:
+		inputvec[counter*layerLength + proc.char2val(letter)] = 1.0
+		counter += 1
+#	print len(inputvec), len(nn.inputLayer)
 	# Make network learn from input
-	for char in inputtext:
-		nn.inputData(proc.char2vec(char))
-		nn.computeOutput()
-		nn.learn()
-		#nn.learn()
-		answer += proc.vec2char(nn.outputLayer_f.tolist())
+#	#for char in inputtext:
+#	#	nn.inputData(proc.char2vec(char))
+#	#	nn.computeOutput()
+#	#	nn.learn()
+#	#	answer += proc.vec2char(nn.outputLayer_f.tolist())
+	nn.inputData(inputvec)
+	#print "inputed"
+	nn.computeOutput()
+	#print "computed"
+	nn.learn()
+	#print "learned"
+	#answer += proc.vec2char(nn.outputLayer_f.tolist())
 	# Generate answer (which is way more tricky)
 	iterNb = iterNb + 1
 	#print answer
@@ -47,10 +61,16 @@ inputtext = raw_input('Say something: ')
 answer=""
 
 # Make network learn from input
-for char in inputtext:
-	nn.inputData(proc.char2vec(char))
-	nn.computeOutput()
-	answer += proc.vec2char(nn.outputLayer_f.tolist())
+#ifor char in inputtext:
+#	nn.inputData(proc.char2vec(char))
+#	nn.computeOutput()
+#	answer += proc.vec2char(nn.outputLayer_f.tolist())
+for letter in inputtext:
+	inputvec[counter*layerLength + proc.char2val(letter)] = 1.0
+	counter += 1
+nn.inputData(inputvec)
+nn.computeOutput()
+
 # Generate answer (which is way more tricky)
 print answer
 
