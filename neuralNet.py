@@ -62,7 +62,6 @@ class NeuralNet:
 		for hidN in range(self.hidSize):
 			for inN in range(self.inSize):
 				self.weights[0][hidN][inN] = self.weights[0][hidN][inN] + self.learningRate * nexterror[hidN] * self.inputLayer[inN]
-				#print "modif", self.learningRate * nexterror[hidN] * self.inputLayer[inN]
 		self.endError = sum(error)
 		print "remaining error",sum(error), sum(nexterror)
 

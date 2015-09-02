@@ -14,7 +14,7 @@ nn = NeuralNet(inputSize, inputSize, 4)
 
 # Let's learn patterns of length 5 with a 1-value and two 0.5-values
 #dataset =
-onePos = [3, 7, 2, 5, 0]
+onePos = [3, 7, 2, 5, 0, 1, 4, 6, 8]
 patterns = [[0.0 if elem != onePos[samp] else 1.0 for elem in range(inputSize)] for samp in range(len(onePos))] 
 
 print patterns
