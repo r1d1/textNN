@@ -4,6 +4,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import sys
+import datetime
 
 class NeuralNet:
 	def __init__(self, inSize=5, outSize=5, hidSize=3):
@@ -110,3 +111,11 @@ class NeuralNet:
 		plt.subplot(4,2,8)
 		plt.plot(self.outputLayer_f)
 		plt.draw()
+
+	def saveWeights(self):
+		now = datetime.datetime.now()
+		saveFile = "weightsSaved_"+str(now.year)+str(now.month)+str(now.day)+str(now.hour)+str(now.minute)
+		np.save(saveFile, self.weights)
+	
+	def loadWeights(self, loadFile):
+		self.weights = np.save(loadFile)

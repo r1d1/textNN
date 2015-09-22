@@ -50,7 +50,7 @@ errorEvolution.append(abs(nn.endError))
 meanError = abs(nn.endError)
 alpha = 0.1
 
-while meanError > 0.01:
+while meanError > 0.05:
 	inputdata=dataset[np.random.randint(0,len(dataset)-1)]
 #	# Make network learn from input
 	nn.inputData(inputdata)
@@ -115,3 +115,4 @@ while True:
 			plt.subplot(2,1,2)
 			plt.plot(nn.outputLayer_f)
 
+nn.saveWeights()
