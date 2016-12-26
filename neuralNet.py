@@ -14,7 +14,8 @@ class NeuralNet:
 		self.hiddenLayer_f=np.zeros(hidSize)
 		self.outputLayer_r=np.zeros(outSize)
 		self.outputLayer_f=np.zeros(outSize)
-		self.weights = [np.random.randn(hidSize, inSize), np.random.randn(outSize, hidSize)]
+		#self.weights = [np.random.randn(hidSize, inSize), np.random.randn(outSize, hidSize)]
+		self.weights = [np.random.rand(hidSize, inSize), np.random.rand(outSize, hidSize)]
 		self.inSize = inSize
 		self.outSize = outSize
 		self.hidSize = hidSize
@@ -40,7 +41,7 @@ class NeuralNet:
 		# Back Propagate :
 		# for all layers (inputLayer is desired output)
 		error = self.outputLayer_f * (1.0 - self.outputLayer_f) * np.subtract(self.inputLayer, self.outputLayer_f)
-		#print "error T",error
+		#print "error T",sum(error)
 		# Must be hidden layer size :
 		errorProp = np.array([ sum( error * self.weights[1][:, neuron] ) for neuron in np.arange(self.hidSize)])
 		nexterror = self.hiddenLayer_f * (1.0 - self.hiddenLayer_f) * errorProp
@@ -64,11 +65,12 @@ class NeuralNet:
 			for inN in range(self.inSize):
 				self.weights[0][hidN][inN] = self.weights[0][hidN][inN] + self.learningRate * nexterror[hidN] * self.inputLayer[inN]
 		self.endError = sum(error)
-		print "remaining error",sum(error), sum(nexterror)
+		#print "remaining error",sum(error), sum(nexterror)
 
 	def computeOutput(self):
 		for neuron in range(self.hidSize):
 			self.hiddenLayer_r[neuron] = np.dot(self.inputLayer, self.weights[0][neuron])
+			#print self.hiddenLayer_r[neuron]
 			self.hiddenLayer_f[neuron] = self.sigmoid(1.0, self.hiddenLayer_r[neuron])
 		for neuron in range(self.outSize):
 			self.outputLayer_r[neuron] = np.dot(self.hiddenLayer_f, self.weights[1][neuron])
@@ -98,10 +100,10 @@ class NeuralNet:
 		plt.subplot(4,2,3)
 		plt.plot(self.inputLayer)
 		plt.subplot(4,2,4)
-		ttd1 = chr(self.inputLayer.tolist().index(max(self.inputLayer))+32)
-		plt.text(0.5,0.25, ttd1)
-		ttd2 = chr(self.outputLayer_f.tolist().index(max(self.outputLayer_f))+32)
-		plt.text(0.5,0.75, ttd2)
+		#ttd1 = chr(self.inputLayer.tolist().index(max(self.inputLayer))+32)
+		#plt.text(0.5,0.25, ttd1)
+		#ttd2 = chr(self.outputLayer_f.tolist().index(max(self.outputLayer_f))+32)
+		#plt.text(0.5,0.75, ttd2)
 		plt.subplot(4,2,5)
 		plt.plot(self.hiddenLayer_r)
 		plt.subplot(4,2,6)
