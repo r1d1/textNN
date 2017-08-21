@@ -5,6 +5,7 @@ import math
 import matplotlib.pyplot as plt
 import sys
 import datetime
+from palettable.colorbrewer.sequential import Greys_9, Greys_9_r, YlOrRd_9, YlOrRd_9_r
 
 class NeuralNet:
 	def __init__(self, inSize=5, outSize=5, hidSize=3):
@@ -40,8 +41,13 @@ class NeuralNet:
 	def learn(self):
 		# Back Propagate :
 		# for all layers (inputLayer is desired output)
-		error = self.outputLayer_f * (1.0 - self.outputLayer_f) * np.subtract(self.inputLayer, self.outputLayer_f)
-		#print "error T",sum(error)
+                # 
+		derivSig = np.multiply(self.outputLayer_f, np.subtract(1.0, self.outputLayer_f))
+                lastError= np.subtract(self.inputLayer, self.outputLayer_f)
+
+		error = np.multiply(derivSig, lastError)
+		#error = self.outputLayer_f * np.substract(1.0,self.outputLayer_f) * np.subtract(self.inputLayer, self.outputLayer_f)
+		#print "error ",error
 		# Must be hidden layer size :
 		errorProp = np.array([ sum( error * self.weights[1][:, neuron] ) for neuron in np.arange(self.hidSize)])
 		nexterror = self.hiddenLayer_f * (1.0 - self.hiddenLayer_f) * errorProp
@@ -64,7 +70,7 @@ class NeuralNet:
 		for hidN in range(self.hidSize):
 			for inN in range(self.inSize):
 				self.weights[0][hidN][inN] = self.weights[0][hidN][inN] + self.learningRate * nexterror[hidN] * self.inputLayer[inN]
-		self.endError = sum(error)
+		self.endError = sum(abs(error))
 		#print "remaining error",sum(error), sum(nexterror)
 
 	def computeOutput(self):
@@ -73,6 +79,7 @@ class NeuralNet:
 			#print self.hiddenLayer_r[neuron]
 			self.hiddenLayer_f[neuron] = self.sigmoid(1.0, self.hiddenLayer_r[neuron])
 		for neuron in range(self.outSize):
+			#self.outputLayer_r[neuron] = np.dot(self.hiddenLayer_r, self.weights[1][neuron])
 			self.outputLayer_r[neuron] = np.dot(self.hiddenLayer_f, self.weights[1][neuron])
 			self.outputLayer_f[neuron] = self.sigmoid(1.0, self.outputLayer_r[neuron])
 
@@ -92,10 +99,10 @@ class NeuralNet:
 	def displayNetwork(self):
 		plt.clf()	
 		plt.subplot(4,2,1)
-		plt.imshow(self.weights[0], interpolation='none')
+		plt.imshow(self.weights[0], interpolation='none', cmap=YlOrRd_9_r.mpl_colormap)
 		plt.colorbar()
 		plt.subplot(4,2,2)
-		plt.imshow(self.weights[1].T, interpolation='none')
+		plt.imshow(self.weights[1].T, interpolation='none',cmap=YlOrRd_9_r.mpl_colormap)
 		plt.colorbar()
 		plt.subplot(4,2,3)
 		plt.plot(self.inputLayer)

@@ -2,15 +2,19 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import brewer2mpl
+#import brewer2mpl
+import palettable
 
 from neuralNet import NeuralNet
 from textProcessing import TextProcessing
+import time
+import sys
 
 plt.ion()
 
 inputSize= 10
 nn = NeuralNet(inputSize, inputSize, 4)
+nn.learningRate = 0.005
 
 # Let's learn patterns of length 5 with a 1-value and two 0.5-values
 #dataset =
@@ -48,24 +52,49 @@ nn.learn()
 iterNb = 1
 errorEvolution.append(abs(nn.endError))
 meanError = abs(nn.endError)
-alpha = 0.05
+print "First errors:"
+print "input:"
+print inputdata
+print "output"
+print nn.outputLayer_f
+print nn.endError
+print meanError
+alpha = 0.005
 
-while meanError > 0.015:
-	inputdata=dataset[np.random.randint(0,len(dataset)-1)]
-#	# Make network learn from input
-	nn.inputData(inputdata)
-	nn.computeOutput()
-	nn.learn()
-	iterNb = iterNb + 1
-	errorEvolution.append(abs(nn.endError))
-	meanError = (1 - alpha) * meanError + alpha * abs(nn.endError) 
-#	# Generate answer (which is way more tricky)
+l=0
+#while l < 10000:
+starttime = time.time()
+comptimes= []
+print "Training:",
+threshold = 0.001
+try:
+	while meanError > threshold:
+		inputdata=dataset[np.random.randint(0,len(dataset)-1)]
+		# Make network learn from input
+		nn.inputData(inputdata)
+		nn.computeOutput()
+		nn.learn()
+		iterNb = iterNb + 1
+		errorEvolution.append(abs(nn.endError))
+		meanError = (1 - alpha) * meanError + alpha * abs(nn.endError) 
+		# Generate answer (which is way more tricky)
+		l=l+1
+		comptimes.append(time.time() - starttime)
+		sys.stdout.write('\r')
+		# the exact output you're looking for:
+		sys.stdout.write("%f" % (meanError/threshold))
+		sys.stdout.flush()
+except KeyboardInterrupt:
+	print "Interrupted learning at",l,"iterations"
 
 plt.figure()
 nn.displayNetwork()
 
-plt.figure()
-plt.plot(errorEvolution)
+fig2 = plt.figure()
+ax= fig2.add_subplot(2,1,1)
+ax.plot(errorEvolution)
+ax= fig2.add_subplot(2,1,2)
+ax.plot(comptimes)
 plt.show()
 print "Network trained in ", iterNb, "iterations !"
 raw_input('Press Enter to continue. ')
@@ -95,6 +124,7 @@ for pat in patterns:
 	print count, pat
 	count += 1
 
+
 while True:
 	ptT = raw_input('Which pattern to test ? (Or Q to quit) : ')
 	print type(ptT)
@@ -112,7 +142,9 @@ while True:
 			plt.clf()	
 			plt.subplot(2,1,1)
 			plt.plot(nn.inputLayer)
+                        #plt.ylim([0,1])
 			plt.subplot(2,1,2)
 			plt.plot(nn.outputLayer_f)
+                        #plt.ylim([0,1])
 
 nn.saveWeights()
